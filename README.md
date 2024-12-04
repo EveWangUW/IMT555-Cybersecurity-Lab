@@ -2,6 +2,7 @@
 👩🏻‍💻 In this lab, I coded in **Python** and **PHP** and utilized tools such as **Docker**, **Selenium**, and **Metasploit** to explore key cybersecurity concepts and practices through hands-on exercises. From setting up secure environments to performing penetration testing and identifying vulnerabilities, each lab provided practical experience with real-world tools and techniques.
 
 💡 Specifically:
+
 **Week 1: Getting Started** - Set up the environment and tools, including **Docker** and **PHP**, to prepare for hands-on security labs.
 
 **Week 2: MiTM** - Conducted Man-in-the-Middle attacks to intercept and analyze insecure network traffic.
