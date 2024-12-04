@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset ($_POST['vaultName'])) {
 
     // We need to fetch the user_id based off the username in order to complete the permission insert, we are going to default to Owner for the role so we can hardcode that without looking it up
 
-    $user = $_COOKIE['authenticated'];
+    $user = $_SESSION['authenticated'];
     $queryFetchUserId = "SELECT user_id FROM users WHERE username = '$user'";
     $resultFetchUserId = $conn->query($queryFetchUserId);
 
@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset ($_POST['deleteVaultId']) && 
 }
 
 // Retrieve vaults from the database
-if ($_COOKIE['isSiteAdministrator'] == true) {
+if ($_SESSION['isSiteAdministrator'] == true) {
     $query = "SELECT vaults.vault_id, vaults.vault_name
                FROM vaults";
 } else {
@@ -108,7 +108,7 @@ if ($_COOKIE['isSiteAdministrator'] == true) {
     FROM vaults, vault_permissions, users
     WHERE vaults.vault_id = vault_permissions.vault_id
     AND vault_permissions.user_id = users.user_id
-    AND users.username = '" . $_COOKIE['authenticated'] . "'";
+    AND users.username = '" . $_SESSION['authenticated'] . "'";
 }
 
 $searchQuery = "";

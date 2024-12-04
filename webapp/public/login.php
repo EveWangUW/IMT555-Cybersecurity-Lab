@@ -1,22 +1,25 @@
 <?php
 
 session_start();
+include './components/loggly-logger.php';
 
 $hostname = 'backend-mysql-database';
 $username = 'user';
 $password = 'supersecretpw';
 $database = 'password_manager';
 
+$logger->info("Attempting to connect to the database.");
 $conn = new mysqli($hostname, $username, $password, $database);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+$logger->info("Database connection is successful!");
 
 unset($error_message);
 
 if ($conn->connect_error) {
-    $errorMessage = "Connection failed: " . $conn->connect_error;    
+    $errorMessage = "Connection failed: " . $conn->connect_error; 
     die($errorMessage);
 }
 
@@ -26,27 +29,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password' AND approved = 1";
-    $result = $conn->query($sql);
+    // $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password' AND approved = 1";
+    // $result = $conn->query($sql);
+    // Prepare a parameterized SQL query
+    $sql = "SELECT * FROM users WHERE username = ? AND password = ? AND approved = 1";
+    $stmt = $conn->prepare($sql);
+    // Bind the input variables to the prepared statement
+    $stmt->bind_param("ss", $username, $password);
+    // Execute the prepared statement
+    $stmt->execute();
+    // Get the result of the query
+    $result = $stmt->get_result();
 
     if($result->num_rows > 0) {
        
         $userFromDB = $result->fetch_assoc();
 
         //$_COOKIE['authenticated'] = $username;
-        setcookie('authenticated', $username, time() + 3600, '/');     
+        $_SESSION['authenticated'] = $username;     
 
         if ($userFromDB['default_role_id'] == 1)
         {        
-            setcookie('isSiteAdministrator', true, time() + 3600, '/');                
+            $_SESSION['isSiteAdministrator'] = 1;               
         }else{
-            unset($_COOKIE['isSiteAdministrator']); 
-            setcookie('isSiteAdministrator', '', -1, '/'); 
+            unset($_SESSION['isSiteAdministrator']); 
         }
+        $logger->info("Login successful for username: $username");
+
         header("Location: index.php");
         exit();
     } else {
         $error_message = 'Invalid username or password.';  
+        $logger->warning("Login failed for username: $username");
     }
 
     $conn->close();

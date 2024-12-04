@@ -1,12 +1,17 @@
 <?php
 
+session_start();
+
+include './components/loggly-logger.php';
+
+//Record username
+$username = $_SESSION['authenticated'];
+
 // Expire the authentication cookie
-unset($_COOKIE['authenticated']); 
-setcookie('authenticated', '', time() - 3600, '/');
+unset($_SESSION['authenticated']);
 
 // Expire the Administrator cookie
-unset($_COOKIE['isSiteAdministrator']); 
-setcookie('isSiteAdministrator', '', -1, '/'); 
+unset($_SESSION['isSiteAdministrator']); 
 
 // Redirect to the login page
 header('Location: /login.php');

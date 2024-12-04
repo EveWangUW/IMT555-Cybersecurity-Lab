@@ -168,11 +168,11 @@ if (!$resultPasswords) {
 }
 
 $queryVaultOwner = "SELECT *
-                    FROM vault_permissions, users
-                    WHERE vault_permissions.vault_id = $vaultId
-                    AND vault_permissions.role_id = 1
-                    AND vault_permissions.user_id = users.user_id
-                    AND users.username = '" . $_COOKIE['authenticated'] . "'";
+            FROM vault_permissions, users
+            WHERE vault_permissions.vault_id = $vaultId
+            AND vault_permissions.role_id = 1
+            AND vault_permissions.user_id = users.user_id
+            AND users.username = '" . $_SESSION['authenticated'] . "'";
 
 $resultIsOwner = $conn->query($queryVaultOwner);
 
